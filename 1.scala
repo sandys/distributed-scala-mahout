@@ -16,11 +16,15 @@ import org.apache.commons.cli.Options
  
  
 object WordCount2 extends Configured with Tool {
- 
+
+  //input key, input value. output key, output value
+
+
   class Map extends Mapper[LongWritable, Text, Text, IntWritable] {
     var one: IntWritable = new IntWritable(1);
     //var word: Text = new Text();
   	
+    //context is a member of mapper class
     override def map(key: LongWritable, value: Text, context: Mapper[LongWritable, Text, Text, IntWritable]#Context) {
       // var a : IMat = 1\2\3
       var line: String = value.toString();
@@ -40,6 +44,7 @@ object WordCount2 extends Configured with Tool {
   }
  
   class Reduce extends Reducer[Text, IntWritable, Text, IntWritable] {
+    // input values has to be iterable in java land not scala land
     override def reduce(key: Text, values: java.lang.Iterable[IntWritable], context:Reducer[Text, IntWritable, Text, IntWritable]#Context) {
       val ivalues = values.iterator
       val svals = new scala.collection.Iterator[Int]{
