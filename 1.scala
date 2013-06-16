@@ -18,7 +18,8 @@ import org.apache.commons.cli.Options
 object WordCount2 extends Configured with Tool {
 
   //input key, input value. output key, output value
-
+  
+  val Regex = "(\\d+)".r;
 
   class Map extends Mapper[LongWritable, Text, Text, IntWritable] {
     var one: IntWritable = new IntWritable(1);
@@ -29,9 +30,15 @@ object WordCount2 extends Configured with Tool {
       // var a : IMat = 1\2\3
       var line: String = value.toString();
       
-      for(word <- line.split(" ")){
-        context.write(new Text(word), one)
+      Regex.findAllIn(line).matchData foreach {
+        m => context.write(new Text(m.group(1)), one)
       }
+      
+      //context.write(new Text(line), one);
+      
+      /**for(word <- line.split(" ")){
+        context.write(new Text(word), one)
+      }**/
  
       /*
       var tokenizer: StringTokenizer = new StringTokenizer(line);
@@ -52,10 +59,11 @@ object WordCount2 extends Configured with Tool {
 	def next = ivalues.next.get
       }
  
-      val sum = (svals : scala.collection.Iterator[Int]).reduceLeft (
-        (a: Int, b: Int) => a + b
-      )
-      context.write(key, new IntWritable(sum))
+      //val sum = (svals : scala.collection.Iterator[Int]).reduceLeft (
+      //  (a: Int, b: Int) => a + b
+      //)
+      //context.write(key, new IntWritable(sum))
+      context.write(key, new IntWritable(1))
     /*
       var sum: Int = 0;
       while (values.hasNext()) {
