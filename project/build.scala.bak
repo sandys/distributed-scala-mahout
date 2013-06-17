@@ -1,0 +1,43 @@
+import sbt._
+import Keys._
+
+import sbtassembly.Plugin.AssemblyKeys
+import sbtassembly.Plugin.AssemblyKeys._
+import sbtassembly.Plugin.assemblySettings
+import sbtassembly.Plugin.MergeStrategy
+
+
+object ApplicationBuild extends Build {
+
+  val appName = "test"
+  val appVersion = "1.0-SNAPSHOT"
+
+  val appDependencies = Seq(
+    "org.apache.hadoop" % "hadoop-core" % "1.0.4",
+    "org.apache.mahout" % "mahout-core" % "0.7"
+)
+
+  val main = 
+    Project(appName, appVersion, appDependencies)
+    settings(assemblySettings: _*)
+    settings(
+      mergeStrategy in assembly := MergeStrategy.first
+    )
+
+libraryDependencies ++= Seq(
+    "org.apache.hadoop" % "hadoop-core" % "1.0.4",
+    "org.apache.mahout" % "mahout-core" % "0.7"
+)
+
+    lazy val main = Project(
+    "test",
+    file("."),
+    settings = 
+      commonSettings ++ libraryDependencies,
+      mergeStrategy in assembly := {
+        case _ => MergeStrategy.concat
+      }
+    )
+  
+}
+
